@@ -1,23 +1,36 @@
-import numpy
-import ast
+import time
 import matplotlib.pyplot as plt
 import requests
-matplotlib.use('TkAgg')
+import numpy as np
+
 lisx = []
 lisy = []
 
-for a in range(-10,10):
+
+start = time.time()
+for a in range(-10, 10):
         url = 'http://165.227.157.145:8080/api/do_measurement?x=' + str(a)
-        # rl = urllib.request.urlopen('http://165.227.157.145:8080/api/do_measurement?x=' + str(a)).read()
         r = requests.get(url)
         c = r.json()
-        d = c['data']['x']
-        lisx.append(d)
+        x = c['data']['x']
+        lisx.append(x)
         y = c['data']['y']
         lisy.append(y)
-print(lisx)
-print(lisy)
-
-plt.plot(lisx)
-plt.ylabel(lisy)
+        if x == 0:
+                print()
+end = time.time()
+axes = plt.gca()
+ymin, ymax = axes.get_ylim()
+# print(lisx)
+# print(lisy)
+print(end - start)
+plt.plot(lisx, lisy)
 plt.show()
+
+peak = np.ptp(lisx,lisy)
+print(peak)
+# plt.savefig('ML.png')
+#
+# res = numpy.linalg.solve(lisx,lisy)
+# print(res)
+
