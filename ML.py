@@ -22,7 +22,8 @@ xarr = np.array(lisx)
 yarr = np.array(lisy)
 matrix = np.column_stack((xarr,yarr))
 
-b = matrix[matrix != 0].min()
+b = np.minimum(xarr,yarr)
+b = matrix[matrix[0][1] != 0].min()
 rows = np.where(matrix[:, 1] == b)
 peak = matrix[rows]
 h = peak[0][0]
@@ -30,15 +31,22 @@ k = peak[0][1]
 print(peak)
 print(b)
 print(matrix)
-# z = np.polyfit(xarr,yarr,0)
+z = np.polyfit(xarr,yarr,0)
 # print("{0}x^2 + {1}x^2 ".format(z))
-x = 0
-# chage some things
-vysledek = a * (x - h) ** 2 + k
-print(vysledek)
+yzero = 0
+itemindex = np.where(yarr == 0)
+abc = itemindex[0]
+xzero = matrix[abc][0][0]
 
-vysledek2 = vysledek * (x - h) ** 2 + k
-print(vysledek2)
+xyz = None
+vysledek = (xzero - h)**2
+
+
+# vysledek = a * (x - h) ** 2 + k
+# print(vysledek)
+#
+# vysledek2 = vysledek * (x - h) ** 2 + k
+# print(vysledek2)
 
 # miny = min(yarr)
 # print(miny)
@@ -55,7 +63,7 @@ print(vysledek2)
 # print(ymin,xmin)
 
 
-#vykresleni grafu
+# vykresleni grafu
 plt.axhline(0, color='black')
 plt.axvline(0, color='black')
 axes = plt.gca()
