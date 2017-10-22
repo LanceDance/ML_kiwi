@@ -8,51 +8,67 @@ plt.interactive(False)
 lisx = []
 lisy = []
 
-def find_nearest_vector(array, value):
-  idx = np.array([np.linalg.norm(y+x) for (y,x) in array-value]).argmin()
-  return array[idx]
 
-
-for i in range(-20,20):
+for i in range(-100,100):
         url = 'http://165.227.157.145:8080/api/do_measurement?x=' + str(i)
         # rl = urllib.request.urlopen('http://165.227.157.145:8080/api/do_measurement?x=' + str(a)).read()
         r = requests.get(url)
         c = r.json()
-        x = int(c['data']['x'])
+
+        x = c['data']['x']
         lisx.append(x)
-        y = int(c['data']['y'])
+        y = c['data']['y']
         lisy.append(y)
 
 
-xarr = np.array(lisx)
-yarr = np.array(lisy)
+'''
+create matrix
+'''
+xarr = np.array(lisx, dtype=float)
+yarr = np.array(lisy, dtype=float)
 matrix = np.column_stack((xarr,yarr))
 
-b = np.minimum(xarr,yarr)
-b = matrix[matrix[0][1] != 0].min()
-rows = np.where(matrix[:, 1] == b)
-peak = matrix[rows]
-h = peak.item(0)
-k = peak.item(1)
-print(h)
-print(k)
+
+"""
+find where x = 0
+return array in matrix
+"""
+get_zero = np.where(matrix == 0)[0]
+zero = matrix[get_zero]
+zero_x = zero[0][0]
+zero_y = round(zero[0][1], 3)
+print('Zerox: ' + str(zero_x))
+print('Zeroy: ' + str(zero_y))
 print(matrix)
-z = np.polyfit(xarr,yarr,0)
 
-yzero = find_nearest_vector(matrix,0)
+'''
+find the (h,k) value
+'''
+c = min(lisy)
+xyz = lisy.index(c)
+peak = matrix[xyz]
+h = round(peak[0], 3)
+k = round(peak[1], 3)
 
-xzero = yzero[0]
-yzero = yzero[1]
-print(xzero,yzero)
+print(h, k)
 
-zavorka = (xzero - h) ** 2
-print('{}y = a({}x - {}h) ** 2 + {}k'.format(yzero,xzero,h,k))
+'''
+equation
+'''
+print('f(x) = a(x-h)**2 + k')
+print('f(x) = a({} - {}) **2 + {}'.format(zero_x,h,k))
+
+
+'''
+graph
+'''
+
 plt.axhline(0, color='black')
 plt.axvline(0, color='black')
 axes = plt.gca()
 axes.get_ylim()
-plt.plot(xarr, yarr)
 
-
+plt.plot(xarr, yarr, 'ro')
+plt.savefig('graph.png')
 plt.show()
 
